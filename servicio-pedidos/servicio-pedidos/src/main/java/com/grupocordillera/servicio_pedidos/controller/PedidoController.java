@@ -50,13 +50,17 @@ public class PedidoController {
     @GetMapping("/cargar-ejemplos")
     public String cargarDatos() {
         Pedido p1 = new Pedido();
+        p1.setProducto("Cemento Melón Extra");
+        p1.setCantidad(20);
         p1.setSucursalOrigen("Santiago Centro");
         p1.setMontoTotal(150000.0);
         p1.setEstado("Completado");
 
         Pedido p2 = new Pedido();
+        p2.setProducto("Fierro de Construcción 12mm");
+        p2.setCantidad(5);
         p2.setSucursalOrigen("Concepción");
-        p2.setMontoTotal(85000.0);
+        p2.setMontoTotal(60000.0);
         p2.setEstado("Pendiente");
 
         repository.save(p1);
@@ -72,6 +76,8 @@ public class PedidoController {
         Pedido pedido = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Pedido no encontrado"));
 
+        pedido.setProducto(pedidoActualizado.getProducto());
+        pedido.setCantidad(pedidoActualizado.getCantidad());
         pedido.setSucursalOrigen(pedidoActualizado.getSucursalOrigen());
         pedido.setMontoTotal(pedidoActualizado.getMontoTotal());
         pedido.setEstado(pedidoActualizado.getEstado());

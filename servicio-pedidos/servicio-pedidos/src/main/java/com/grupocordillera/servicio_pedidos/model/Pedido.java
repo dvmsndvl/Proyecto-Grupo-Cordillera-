@@ -18,6 +18,8 @@ public class Pedido {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String producto; // Nombre del producto solicitado
+    private Integer cantidad; // Cantidad del producto
     private String sucursalOrigen; // Ciudad o sucursal [cite: 5]
     private Double montoTotal;
     private String estado; // Pendiente, Completado, Cancelado

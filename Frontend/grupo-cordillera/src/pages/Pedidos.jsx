@@ -12,15 +12,16 @@ import {
 } from "../components/Icons";
 
 const MOCK_PEDIDOS = [
-    { sucursalOrigen: "Concepción", montoTotal: 85000, estado: "Pendiente", fechaCreacion: "2026-06-04T18:49:06" },
-    { sucursalOrigen: "Calama", montoTotal: 12000, estado: "Pendiente", fechaCreacion: "2026-06-04T18:51:59" },
-    { sucursalOrigen: "Viña del Mar", montoTotal: 300000, estado: "Completado", fechaCreacion: "2026-06-04T19:02:15" }
+    { producto: "Cemento Melón Extra", cantidad: 20, sucursalOrigen: "Santiago Centro", montoTotal: 150000, estado: "Completado", fechaCreacion: "2026-06-04T18:49:06" },
+    { producto: "Fierro de Construcción 12mm", cantidad: 5, sucursalOrigen: "Concepción", montoTotal: 60000, estado: "Pendiente", fechaCreacion: "2026-06-04T18:51:59" }
 ];
 
 function Pedidos() {
     const [pedidos, setPedidos] = useState([]);
     
     // Campos del Formulario
+    const [producto, setProducto] = useState("");
+    const [cantidad, setCantidad] = useState("");
     const [sucursalOrigen, setSucursalOrigen] = useState("");
     const [montoTotal, setMontoTotal] = useState("");
     const [estado, setEstado] = useState("Pendiente");
@@ -79,12 +80,19 @@ function Pedidos() {
     const guardarPedido = (e) => {
         e.preventDefault();
 
-        if (!sucursalOrigen.trim() || montoTotal === "") {
+        if (!producto.trim() || cantidad === "" || !sucursalOrigen.trim() || montoTotal === "") {
             mostrarAlerta("Por favor, complete todos los campos.", "error");
             return;
         }
 
+        const cantVal = parseInt(cantidad, 10);
         const montoVal = parseFloat(montoTotal);
+
+        if (isNaN(cantVal) || cantVal <= 0) {
+            mostrarAlerta("La cantidad debe ser un número entero positivo.", "error");
+            return;
+        }
+
         if (isNaN(montoVal) || montoVal <= 0) {
             mostrarAlerta("El monto total debe ser un número positivo.", "error");
             return;
@@ -95,6 +103,8 @@ function Pedidos() {
         if (editando !== null) {
             copia[editando] = {
                 ...copia[editando],
+                producto: producto.trim(),
+                cantidad: cantVal,
                 sucursalOrigen: sucursalOrigen.trim(),
                 montoTotal: montoVal,
                 estado: estado
@@ -104,6 +114,8 @@ function Pedidos() {
             mostrarAlerta("Pedido actualizado correctamente.", "success");
         } else {
             const nuevoPedidoObj = {
+                producto: producto.trim(),
+                cantidad: cantVal,
                 sucursalOrigen: sucursalOrigen.trim(),
                 montoTotal: montoVal,
                 estado: estado,
@@ -120,6 +132,8 @@ function Pedidos() {
 
     const editarPedido = (index) => {
         const ped = pedidos[index];
+        setProducto(ped.producto || "");
+        setCantidad(ped.cantidad !== undefined ? ped.cantidad : "");
         setSucursalOrigen(ped.sucursalOrigen || "");
         setMontoTotal(ped.montoTotal !== undefined ? ped.montoTotal : "");
         setEstado(ped.estado || "Pendiente");
@@ -139,6 +153,8 @@ function Pedidos() {
     };
 
     const limpiarFormulario = () => {
+        setProducto("");
+        setCantidad("");
         setSucursalOrigen("");
         setMontoTotal("");
         setEstado("Pendiente");
@@ -146,8 +162,8 @@ function Pedidos() {
     };
 
     const pedidosFiltrados = pedidos.filter((pedido) => {
-        const sucursal = (pedido.sucursalOrigen || "").toLowerCase();
-        return sucursal.includes(filtro.toLowerCase());
+        const searchStr = `${pedido.producto || ""} ${pedido.sucursalOrigen || ""}`.toLowerCase();
+        return searchStr.includes(filtro.toLowerCase());
     });
 
     return (
@@ -197,11 +213,38 @@ function Pedidos() {
                         <form onSubmit={guardarPedido}>
                             <div className="form-group">
                                 <label style={{ fontSize: "0.82rem", fontWeight: "600", color: "var(--text-secondary)", alignSelf: "flex-start" }}>
+                                    Producto
+                                </label>
+                                <input
+                                    type="text"
+                                    placeholder="Ej: Cemento Melón Extra"
+                                    value={producto}
+                                    onChange={(e) => setProducto(e.target.value)}
+                                    style={{ paddingLeft: "12px" }}
+                                />
+                            </div>
+
+                            <div className="form-group">
+                                <label style={{ fontSize: "0.82rem", fontWeight: "600", color: "var(--text-secondary)", alignSelf: "flex-start" }}>
+                                    Cantidad
+                                </label>
+                                <input
+                                    type="number"
+                                    placeholder="Ej: 10"
+                                    value={cantidad}
+                                    onChange={(e) => setCantidad(e.target.value)}
+                                    style={{ paddingLeft: "12px" }}
+                                    min="1"
+                                />
+                            </div>
+
+                            <div className="form-group">
+                                <label style={{ fontSize: "0.82rem", fontWeight: "600", color: "var(--text-secondary)", alignSelf: "flex-start" }}>
                                     Sucursal de Origen
                                 </label>
                                 <input
                                     type="text"
-                                    placeholder="Ej: Calama, Concepción"
+                                    placeholder="Ej: Santiago Centro"
                                     value={sucursalOrigen}
                                     onChange={(e) => setSucursalOrigen(e.target.value)}
                                     style={{ paddingLeft: "12px" }}
@@ -214,7 +257,7 @@ function Pedidos() {
                                 </label>
                                 <input
                                     type="number"
-                                    placeholder="Ej: 12000"
+                                    placeholder="Ej: 150000"
                                     value={montoTotal}
                                     onChange={(e) => setMontoTotal(e.target.value)}
                                     style={{ paddingLeft: "12px" }}
@@ -280,7 +323,7 @@ function Pedidos() {
                                 <input
                                     type="text"
                                     className="search-input"
-                                    placeholder="Filtrar por sucursal..."
+                                    placeholder="Filtrar por sucursal o producto..."
                                     value={filtro}
                                     onChange={(e) => setFiltro(e.target.value)}
                                 />
@@ -291,8 +334,10 @@ function Pedidos() {
                             <table>
                                 <thead>
                                     <tr>
-                                        <th style={{ width: "8%" }}>#</th>
-                                        <th>Sucursal Origen</th>
+                                        <th style={{ width: "6%" }}>#</th>
+                                        <th>Producto</th>
+                                        <th style={{ width: "10%" }}>Cant.</th>
+                                        <th>Sucursal</th>
                                         <th>Monto Total</th>
                                         <th>Estado</th>
                                         <th style={{ width: "25%", textAlign: "center" }}>Acciones</th>
@@ -303,6 +348,8 @@ function Pedidos() {
                                         pedidosFiltrados.map((pedido, index) => (
                                             <tr key={index}>
                                                 <td>{index + 1}</td>
+                                                <td style={{ fontWeight: "600" }}>{pedido.producto || "N/A"}</td>
+                                                <td>{pedido.cantidad || 0}</td>
                                                 <td style={{ fontWeight: "500" }}>{pedido.sucursalOrigen}</td>
                                                 <td>
                                                     ${parseFloat(pedido.montoTotal || 0).toLocaleString("es-CL", { minimumFractionDigits: 0 })}
@@ -340,7 +387,7 @@ function Pedidos() {
                                         ))
                                     ) : (
                                         <tr>
-                                            <td colSpan="5" style={{ textAlign: "center", padding: "30px", color: "var(--text-muted)", fontSize: "0.9rem" }}>
+                                            <td colSpan="7" style={{ textAlign: "center", padding: "30px", color: "var(--text-muted)", fontSize: "0.9rem" }}>
                                                 {filtro ? "No se encontraron pedidos coincidentes." : "No hay pedidos registrados."}
                                             </td>
                                         </tr>
