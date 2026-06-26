@@ -1,0 +1,20 @@
+# IDE and System Files
+.idea/
+*.iml
+.vscode/
+.DS_Store
+Thumbls.db
+
+# Node.js
+**/node_modules/
+**/dist/
+**/.env
+
+# Java / Maven
+**/target/
+**/mvnw
+**/mvnw.cmd
+**/.mvn/
+**/HELP.md
+**/bin/
+**/*.class
