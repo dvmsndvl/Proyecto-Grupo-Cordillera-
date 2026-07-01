@@ -39,9 +39,9 @@ El sistema está compuesto por cuatro componentes autónomos:
 ### 2. Levantar el Frontend (React)
 1.  Navega al directorio del frontend:
     ```bash
-    cd Frontend/grupo-cordillera
+    cd Frontend
     ```
-2.  Instala las dependencias necesarias:
+2.  Instala las dependencias necesarias (si es la primera vez):
     ```bash
     npm install
     ```
@@ -65,7 +65,7 @@ El sistema está compuesto por cuatro componentes autónomos:
 ### 4. Levantar el Microservicio de Pedidos
 1.  Navega al directorio del servicio:
     ```bash
-    cd servicio-pedidos/servicio-pedidos
+    cd servicio-pedidos
     ```
 2.  Ejecuta la aplicación:
     ```bash
@@ -76,7 +76,7 @@ El sistema está compuesto por cuatro componentes autónomos:
 ### 5. Levantar el Microservicio de Inventario
 1.  Navega al directorio del servicio:
     ```bash
-    cd GrupoCordilleraRepo-feature-microservicio-inventario/servicio-inventario
+    cd servicio-inventario
     ```
 2.  Ejecuta la aplicación:
     ```bash
