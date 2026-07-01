@@ -65,7 +65,7 @@ El sistema está compuesto por cuatro componentes autónomos:
 ### 4. Levantar el Microservicio de Pedidos
 1.  Navega al directorio del servicio:
     ```bash
-    cd servicio-pedidos
+    cd microservicio-pedidos
     ```
 2.  Ejecuta la aplicación:
     ```bash
@@ -76,7 +76,7 @@ El sistema está compuesto por cuatro componentes autónomos:
 ### 5. Levantar el Microservicio de Inventario
 1.  Navega al directorio del servicio:
     ```bash
-    cd servicio-inventario
+    cd microservicio-inventario
     ```
 2.  Ejecuta la aplicación:
     ```bash
